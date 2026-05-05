@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>概率公式计算器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 概率公式计算器</h1>
+            <p class="subtitle">支持多种常见概率公式的在线计算工具</p>
+        </header>
+
+        <nav class="formula-nav">
+            <button class="nav-btn active" data-formula="classical">古典概型</button>
+            <button class="nav-btn" data-formula="conditional">条件概率</button>
+            <button class="nav-btn" data-formula="bayes">贝叶斯公式</button>
+            <button class="nav-btn" data-formula="binomial">二项分布</button>
+            <button class="nav-btn" data-formula="poisson">泊松分布</button>
+            <button class="nav-btn" data-formula="normal">正态分布</button>
+            <button class="nav-btn" data-formula="expectation">数学期望</button>
+            <button class="nav-btn" data-formula="variance">方差</button>
+        </nav>
+
+        <div class="formula-content">
+            <!-- 古典概型 -->
+            <div class="formula-panel active" id="classical">
+                <h2>古典概型</h2>
+                <div class="formula-display">
+                    <span class="formula-text">P(A) = m / n</span>
+                    <p class="formula-desc">事件A发生的概率 = 事件A包含的基本事件数 / 总基本事件数</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>事件A包含的基本事件数 (m)：</span>
+                        <input type="number" id="classical-m" min="0" step="1" value="1">
+                    </label>
+                    <label>
+                        <span>总基本事件数 (n)：</span>
+                        <input type="number" id="classical-n" min="1" step="1" value="6">
+                    </label>
+                    <button class="calc-btn" onclick="calculateClassical()">计算</button>
+                </div>
+                <div class="result" id="classical-result"></div>
+            </div>
+
+            <!-- 条件概率 -->
+            <div class="formula-panel" id="conditional">
+                <h2>条件概率</h2>
+                <div class="formula-display">
+                    <span class="formula-text">P(A|B) = P(A∩B) / P(B)</span>
+                    <p class="formula-desc">在事件B发生的条件下，事件A发生的概率</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>P(A∩B)（A和B同时发生的概率）：</span>
+                        <input type="number" id="cond-pab" min="0" max="1" step="0.01" value="0.3">
+                    </label>
+                    <label>
+                        <span>P(B)（事件B发生的概率）：</span>
+                        <input type="number" id="cond-pb" min="0.01" max="1" step="0.01" value="0.5">
+                    </label>
+                    <button class="calc-btn" onclick="calculateConditional()">计算</button>
+                </div>
+                <div class="result" id="conditional-result"></div>
+            </div>
+
+            <!-- 贝叶斯公式 -->
+            <div class="formula-panel" id="bayes">
+                <h2>贝叶斯公式</h2>
+                <div class="formula-display">
+                    <span class="formula-text">P(A|B) = P(A) × P(B|A) / P(B)</span>
+                    <p class="formula-desc">根据先验概率和似然函数计算后验概率</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>P(A)（先验概率）：</span>
+                        <input type="number" id="bayes-pa" min="0" max="1" step="0.01" value="0.4">
+                    </label>
+                    <label>
+                        <span>P(B|A)（似然概率）：</span>
+                        <input type="number" id="bayes-pba" min="0" max="1" step="0.01" value="0.8">
+                    </label>
+                    <label>
+                        <span>P(B)（全概率）：</span>
+                        <input type="number" id="bayes-pb" min="0.01" max="1" step="0.01" value="0.5">
+                    </label>
+                    <button class="calc-btn" onclick="calculateBayes()">计算</button>
+                </div>
+                <div class="result" id="bayes-result"></div>
+            </div>
+
+            <!-- 二项分布 -->
+            <div class="formula-panel" id="binomial">
+                <h2>二项分布</h2>
+                <div class="formula-display">
+                    <span class="formula-text">P(X=k) = C(n,k) × p<sup>k</sup> × (1-p)<sup>n-k</sup></span>
+                    <p class="formula-desc">n次独立重复试验中，事件恰好发生k次的概率</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>试验次数 (n)：</span>
+                        <input type="number" id="binom-n" min="1" max="1000" step="1" value="10">
+                    </label>
+                    <label>
+                        <span>成功次数 (k)：</span>
+                        <input type="number" id="binom-k" min="0" step="1" value="5">
+                    </label>
+                    <label>
+                        <span>单次成功概率 (p)：</span>
+                        <input type="number" id="binom-p" min="0" max="1" step="0.01" value="0.5">
+                    </label>
+                    <button class="calc-btn" onclick="calculateBinomial()">计算</button>
+                </div>
+                <div class="result" id="binomial-result"></div>
+            </div>
+
+            <!-- 泊松分布 -->
+            <div class="formula-panel" id="poisson">
+                <h2>泊松分布</h2>
+                <div class="formula-display">
+                    <span class="formula-text">P(X=k) = e<sup>-λ</sup> × λ<sup>k</sup> / k!</span>
+                    <p class="formula-desc">在单位时间内随机事件发生k次的概率</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>事件发生次数 (k)：</span>
+                        <input type="number" id="poisson-k" min="0" step="1" value="3">
+                    </label>
+                    <label>
+                        <span>平均发生率 (λ)：</span>
+                        <input type="number" id="poisson-lambda" min="0" step="0.1" value="2.5">
+                    </label>
+                    <button class="calc-btn" onclick="calculatePoisson()">计算</button>
+                </div>
+                <div class="result" id="poisson-result"></div>
+            </div>
+
+            <!-- 正态分布 -->
+            <div class="formula-panel" id="normal">
+                <h2>正态分布</h2>
+                <div class="formula-display">
+                    <span class="formula-text">f(x) = 1/(σ√(2π)) × e<sup>-(x-μ)²/(2σ²)</sup></span>
+                    <p class="formula-desc">计算正态分布在x处的概率密度函数值</p>
+                </div>
+                <div class="input-group">
+                    <label>
+                        <span>变量值 (x)：</span>
+                        <input type="number" id="normal-x" step="0.1" value="0">
+                    </label>
+                    <label>
+                        <span>均值 (μ)：</span>
+                        <input type="number" id="normal-mu" step="0.1" value="0">
+                    </label>
+                    <label>
+                        <span>标准差 (σ)：</span>
+                        <input type="number" id="normal-sigma" min="0.01" step="0.1" value="1">
+                    </label>
+                    <button class="calc-btn" onclick="calculateNormal()">计算</button>
+                </div>
+                <div class="result" id="normal-result"></div>
+            </div>
+
+            <!-- 数学期望 -->
+            <div class="formula-panel" id="expectation">
+                <h2>数学期望</h2>
+                <div class="formula-display">
+                    <span class="formula-text">E(X) = Σ(x<sub>i</sub> × p<sub>i</sub>)</span>
+                    <p class="formula-desc">离散型随机变量的加权平均值</p>
+                </div>
+                <div class="input-group">
+                    <div class="table-input">
+                        <table id="expectation-table">
+                            <thead>
+                                <tr>
+                                    <th>取值 x<sub>i</sub></th>
+                                    <th>概率 p<sub>i</sub></th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="number" class="exp-val" step="0.1" value="1"></td>
+                                    <td><input type="number" class="exp-prob" min="0" max="1" step="0.01" value="0.2"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="exp-val" step="0.1" value="2"></td>
+                                    <td><input type="number" class="exp-prob" min="0" max="1" step="0.01" value="0.3"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="exp-val" step="0.1" value="3"></td>
+                                    <td><input type="number" class="exp-prob" min="0" max="1" step="0.01" value="0.5"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="add-row-btn" onclick="addExpectationRow()">+ 添加行</button>
+                    </div>
+                    <button class="calc-btn" onclick="calculateExpectation()">计算</button>
+                </div>
+                <div class="result" id="expectation-result"></div>
+            </div>
+
+            <!-- 方差 -->
+            <div class="formula-panel" id="variance">
+                <h2>方差</h2>
+                <div class="formula-display">
+                    <span class="formula-text">D(X) = E(X²) - [E(X)]²</span>
+                    <p class="formula-desc">衡量随机变量与其期望值的偏离程度</p>
+                </div>
+                <div class="input-group">
+                    <div class="table-input">
+                        <table id="variance-table">
+                            <thead>
+                                <tr>
+                                    <th>取值 x<sub>i</sub></th>
+                                    <th>概率 p<sub>i</sub></th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="number" class="var-val" step="0.1" value="1"></td>
+                                    <td><input type="number" class="var-prob" min="0" max="1" step="0.01" value="0.25"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="var-val" step="0.1" value="2"></td>
+                                    <td><input type="number" class="var-prob" min="0" max="1" step="0.01" value="0.5"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" class="var-val" step="0.1" value="3"></td>
+                                    <td><input type="number" class="var-prob" min="0" max="1" step="0.01" value="0.25"></td>
+                                    <td><button class="remove-row-btn" onclick="removeRow(this)">删除</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="add-row-btn" onclick="addVarianceRow()">+ 添加行</button>
+                    </div>
+                    <button class="calc-btn" onclick="calculateVariance()">计算</button>
+                </div>
+                <div class="result" id="variance-result"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>概率公式计算器 &copy; 2026</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
